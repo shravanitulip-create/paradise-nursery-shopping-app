@@ -10,12 +10,12 @@ const cartSlice = createSlice({
   initialState,
 
   reducers: {
-    // Add a plant to the cart
-    addToCart: (state, action) => {
+    // Add an item to the cart
+    addItem: (state, action) => {
       const plant = action.payload;
 
       const existingItem = state.cartItems.find(
-        (item) => item.id === plant.id
+        item => item.id === plant.id
       );
 
       if (existingItem) {
@@ -28,53 +28,61 @@ const cartSlice = createSlice({
       }
     },
 
-    // Remove a plant from the cart
-    removeFromCart: (state, action) => {
+    // Remove an item from the cart
+    removeItem: (state, action) => {
       state.cartItems = state.cartItems.filter(
-        (item) => item.id !== action.payload
+        item => item.id !== action.payload
       );
     },
 
-    // Increase plant quantity
-    increaseQuantity: (state, action) => {
+    // Update item quantity
+    updateQuantity: (state, action) => {
+      const { id, change } = action.payload;
+
       const item = state.cartItems.find(
-        (item) => item.id === action.payload
+        item => item.id === id
       );
 
       if (item) {
-        item.quantity += 1;
+        item.quantity += change;
+
+        // Remove item when quantity reaches zero
+        if (item.quantity <= 0) {
+          state.cartItems = state.cartItems.filter(
+            cartItem => cartItem.id !== id
+          );
+        }
       }
     },
 
-    // Decrease plant quantity
-    decreaseQuantity: (state, action) => {
-      const item = state.cartItems.find(
-        (item) => item.id === action.payload
-      );
-
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;
-      }
-    },
-
-    // Empty the shopping cart
+    // Clear the entire cart
     clearCart: (state) => {
       state.cartItems = [];
     }
   }
 });
 
-// Export actions
+// Export required Redux actions
 export const {
-  addToCart,
-  removeFromCart,
-  increaseQuantity,
-  decreaseQuantity,
+  addItem,
+  removeItem,
+  updateQuantity,
   clearCart
 } = cartSlice.actions;
 
-// Export selectors
-export const selectCartItems = (state) => state.cart.cartItems;
+// Backward-compatible action names for other components
+export const addToCart = addItem;
+export const removeFromCart = removeItem;
+
+export const increaseQuantity = (id) =>
+  updateQuantity({ id, change: 1 });
+
+export const decreaseQuantity = (id) =>
+  updateQuantity({ id, change: -1 });
+
+// Cart selectors
+export const selectCartItems = (state) =>
+  state.cart.cartItems;
 
 export const selectCartItemCount = (state) =>
   state.cart.cartItems.reduce(
@@ -88,5 +96,4 @@ export const selectCartTotal = (state) =>
     0
   );
 
-// Export reducer
 export default cartSlice.reducer;
