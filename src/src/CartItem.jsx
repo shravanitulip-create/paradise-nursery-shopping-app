@@ -37,8 +37,8 @@ function CartItem() {
 
   // Decrease quantity
   const handleDecrease = (id) => {
-    dispatch(decreaseQuantity(id));
-  };
+  dispatch(decreaseQuantity(id));
+};
 
   // Delete item
   const handleDelete = (id) => {
@@ -150,41 +150,46 @@ function CartItem() {
                     </p>
                   </div>
 
-                  {/* Quantity controls */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}>
+                  
+{/* Quantity controls */}
+<div style={{
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px'
+}}>
 
-                    <button
-                      onClick={() => handleDecrease(item.id)}
-                      disabled={item.quantity <= 1}
-                      style={{
-                        padding: '7px 13px',
-                        cursor: item.quantity <= 1
-                          ? 'not-allowed'
-                          : 'pointer'
-                      }}
-                    >
-                      −
-                    </button>
+  <button
+    className="quantity-decrease"
+    onClick={() => handleDecrease(item.id)}
+    style={{
+      padding: '7px 13px',
+      cursor: 'pointer',
+      border: '1px solid #ccc',
+      borderRadius: '5px'
+    }}
+  >
+    -
+  </button>
 
-                    <span style={{ fontWeight: 'bold' }}>
-                      {item.quantity}
-                    </span>
+  <span style={{ fontWeight: 'bold' }}>
+    {item.quantity}
+  </span>
 
-                    <button
-                      onClick={() => handleIncrease(item.id)}
-                      style={{
-                        padding: '7px 13px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      +
-                    </button>
+  <button
+    className="quantity-increase"
+    onClick={() => handleIncrease(item.id)}
+    style={{
+      padding: '7px 13px',
+      cursor: 'pointer',
+      border: '1px solid #ccc',
+      borderRadius: '5px'
+    }}
+  >
+    +
+  </button>
 
-                  </div>
+</div>
+
 
                   {/* Delete button */}
                   <button
